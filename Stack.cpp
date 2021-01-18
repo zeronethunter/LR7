@@ -8,92 +8,72 @@ struct Node {
 };
 
 struct Stack {
-    Stack(Node* start, Node* end) {
-        first = start;
-        last = end;
-    }
-    Node* first;
-    Node* last;
+    Node* last = nullptr;
 };
-Stack& constructor() {
-    Stack stack(nullptr, nullptr);
-    if (stack.first != nullptr) {
-        cout << "Stack constructed!\n";
-    }
-    return stack;
+void constructor(Stack& stack) {
+    stack.last = nullptr;
 }
 
-void push(Stack& stack, const Node& node) {
-    if (stack.first == nullptr) {
-        Node* new_element = new Node;
-        new_element->information = node.information;
-        stack.first = new_element;
-        stack.last = new_element;
-    } else {
-        Node* new_element = new Node;
-        new_element->information = node.information;
-        new_element->prev = stack.last;
-        stack.last = new_element;
-    }
+void push(Stack& stack, int i) {
+    Node* new_element = new Node;
+    new_element->information = i;
+    new_element->prev = stack.last;
+    stack.last = new_element;
 }
 
 Node& pop(Stack& stack) {
-    Node *result = new Node;
-    Node *node;
-    node = stack.last;
-    result->information = node->information;
+    Node* node = stack.last;
     stack.last = stack.last->prev;
-    delete node;
-    return *result;
+    return *node;
 }
 
 void print (const Stack& stack) {
     cout << "Your stack:" << endl;
     Node* node = stack.last;
-    if (stack.first != stack.last) {
-        while (node != stack.first) {
+    if (node != nullptr) {
+        while (node != nullptr) {
             cout << node->information << endl;
             node = node->prev;
         }
-        cout << node->information << endl;
-    } else if (stack.first != stack.last){
-        cout << node->information << endl;
-    } else
-        cout << "Stack doesn't exist" << endl;
+    } else {
+        cout << "Stack is empty!" << endl;
+    }
 }
 
 unsigned int size(Stack& stack) {
     unsigned int count = 0;
     Node *node = stack.last;
-    while (node != stack.first) {
-        node = node->prev;
-        ++count;
+    if (node != nullptr) {
+        while (node != nullptr) {
+            node = node->prev;
+            ++count;
+        }
+    } else {
+        return 0;
     }
-    ++count;
     return count;
 }
 
 void destructor(Stack& stack) {
     Node *trash = stack.last;
-    if (stack.first != stack.last) {
-        while (stack.first != stack.last) {
+    if (trash != nullptr) {
+        while (stack.last != nullptr) {
             stack.last = stack.last->prev;
             delete trash;
             trash = stack.last;
         }
+        delete trash;
+    } else {
+        return;
     }
-    trash = stack.last;
-    stack = constructor();
-    delete trash;
 }
 
 int main() {
-    Stack stack = constructor();
+    Stack stack;
+    constructor(stack);
 
     for (int i = 0; i <= 12; ++i) {
-        Node node;
-        node.information = i;
-        push(stack, node);
+        push(stack, i);
     }
 
     print(stack);
